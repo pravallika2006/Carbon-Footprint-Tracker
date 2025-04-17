@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carbon Reduction Tips</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #dbefdc;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100vh;
+      }
+
+      button {
+        background-color: white;
+        color: #4caf50;
+        border: 2px solid #4caf50;
+        padding: 10px 20px;
+        font-size: 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 15px;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-weight: bold;
+        transition: color 0.2s ease-in-out;
+      }
+
+      button:hover {
+        background-color: white; /* Keep the background white */
+        color: #2e7d32; /* Darker green for better visibility */
+      }
+
+      header {
+        background-color: #4caf50;
+        color: white;
+        text-align: center;
+        padding: 25px;
+        font-size: 35px;
+        width: 100%;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        margin-top: 20px;
+        width: 90%;
+        max-width: 1200px;
+      }
+
+      .box {
+        background: #f8f8f8;
+        padding: 25px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease-in-out;
+        width: 300px;
+        cursor: pointer;
+      }
+
+      .box:hover {
+        transform: scale(1.05);
+      }
+
+      .box img {
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        background: #ddd;
+        margin-bottom: 10px;
+      }
+
+      p {
+        margin: 0;
+        font-size: 30px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      @media (max-width: 800px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button onclick="window.location.href='dashboard.html';">Back</button>
+
+    <header>Tips</header>
+
+    <div class="grid">
+      <div class="box" onclick="window.location.href='transporttips.html';">
+        <img src="image5.jpg" alt="Transport" />
+        <p>Transport</p>
+      </div>
+      <div class="box" onclick="window.location.href='wastetips.html';">
+        <img src="image6.jpg" alt="Waste" />
+        <p>Waste</p>
+      </div>
+      <div class="box" onclick="window.location.href='powertips.html';">
+        <img src="image2.jpg" alt="Energy" />
+        <p>Energy</p>
+      </div>
+      <div class="box" onclick="window.location.href='foodtips.html';">
+        <img src="image3.jpg" alt="Food" />
+        <p>Food</p>
+      </div>
+      <div class="box" onclick="window.location.href='screentips.html';">
+        <img src="image4.jpg" alt="Screen Usage" />
+        <p>Screen Usage</p>
+      </div>
+    </div>
+  </body>
+</html>

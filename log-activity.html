@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log Activity - Carbon Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-green-50 text-gray-900 font-sans">
+    <!-- Navigation Bar -->
+    <nav
+      class="bg-green-600 text-white p-4 flex justify-between items-center shadow-md"
+    >
+      <h1 class="text-2xl font-bold">🌍 Carbon Tracker</h1>
+      <ul class="flex space-x-6 text-lg">
+        <li>
+          <a href="dashboard.html" class="hover:text-green-300 transition"
+            >Dashboard</a
+          >
+        </li>
+        <li>
+          <a href="log-activity.html" class="hover:text-green-300 transition"
+            >Log Activity</a
+          >
+        </li>
+        <li>
+          <a href="tips.html" class="hover:text-green-300 transition">Tips</a>
+        </li>
+        <li><a href="#" class="hover:text-green-300 transition">Profile</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="text-center py-10 px-6">
+      <h2 class="text-4xl font-extrabold text-green-700">
+        Log Your Daily Activities
+      </h2>
+      <p class="mt-2 text-lg text-gray-700 max-w-2xl mx-auto">
+        Track your carbon footprint by logging travel, food, power usage, screen
+        time, and waste disposal.
+      </p>
+    </header>
+
+    <!-- Log Activity Form -->
+    <div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h3 class="text-2xl font-bold text-center text-green-700">
+        Enter Your Activities
+      </h3>
+
+      <!-- Date Selector -->
+      <label class="block mt-4 text-lg font-semibold">Select Date:</label>
+      <input
+        type="date"
+        id="activity-date"
+        class="w-full p-2 border rounded mt-2"
+        required
+      />
+
+      <!-- Travel Section -->
+      <h3 class="text-xl font-bold mt-6 text-green-600">🚗 Travel</h3>
+      <select id="travel-mode" class="w-full p-2 border rounded mt-2">
+        <option value="">Select Travel Mode</option>
+        <option value="0.21">Car (Petrol/Diesel)</option>
+        <option value="0.15">Car (Electric)</option>
+        <option value="0.10">Bus</option>
+        <option value="0.25">Bike</option>
+        <option value="0.01">Cycle</option>
+        <option value="0.15">Auto</option>
+        <option value="0.90">Flight (Short-Haul)</option>
+        <option value="1.2">Flight (Long-Haul)</option>
+        <option value="0.30">Train</option>
+        <option value="0.25">Ferry</option>
+      </select>
+      <input
+        type="number"
+        id="travel-distance"
+        class="w-full p-2 border rounded mt-2"
+        placeholder="Distance in km"
+        min="0"
+      />
+
+      <!-- Food Section -->
+      <h3 class="text-xl font-bold mt-6 text-green-600">🍽 Food</h3>
+      <label class="block text-lg font-semibold">Number of Meals:</label>
+      <input
+        type="number"
+        id="meals-count"
+        class="w-full p-2 border rounded mt-2"
+        placeholder="Enter number of meals"
+        min="0"
+      />
+
+      <label class="block text-lg font-semibold mt-2">Meal Type:</label>
+      <select id="food-type" class="w-full p-2 border rounded mt-2">
+        <option value="0">Select Meal Type</option>
+        <option value="0.5">Plant-Based</option>
+        <option value="2.5">Meat-Based</option>
+        <option value="1.5">Both</option>
+      </select>
+
+      <!-- Power Consumption -->
+      <h3 class="text-xl font-bold mt-6 text-green-600">
+        ⚡ Power Consumption
+      </h3>
+      <input
+        type="number"
+        id="power-usage"
+        class="w-full p-2 border rounded mt-2"
+        placeholder="Enter kWh used"
+        min="0"
+      />
+
+      <!-- Digital Screen Usage -->
+      <h3 class="text-xl font-bold mt-6 text-green-600">📱 Screen Usage</h3>
+      <input
+        type="number"
+        id="screen-usage"
+        class="w-full p-2 border rounded mt-2"
+        placeholder="Hours spent on screens"
+        min="0"
+        max="24"
+      />
+
+      <!-- Waste Disposal -->
+      <h3 class="text-xl font-bold mt-6 text-green-600">🗑 Waste Disposal</h3>
+      <input
+        type="number"
+        id="waste-amount"
+        class="w-full p-2 border rounded mt-2"
+        placeholder="Enter waste in kg"
+        min="0"
+      />
+
+      <button
+        onclick="logActivity()"
+        class="mt-6 w-full bg-green-700 text-white px-4 py-3 rounded-lg text-lg shadow-lg hover:bg-green-800 transition"
+      >
+        Log Activity
+      </button>
+    </div>
+
+    <!-- Activity List -->
+    <div class="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+      <h3 class="text-2xl font-bold text-center text-green-700">
+        📊 Logged Activities
+      </h3>
+      <ul id="activity-list" class="mt-4"></ul>
+    </div>
+
+    <script>
+      function logActivity() {
+        let date = document.getElementById("activity-date").value;
+        let activities = JSON.parse(localStorage.getItem("activities")) || [];
+
+        let existingEntryIndex = activities.findIndex(
+          (activity) => activity.date === date
+        );
+        if (existingEntryIndex !== -1) {
+          let confirmDelete = confirm(
+            "You have already logged activities for this date. Do you want to overwrite it?"
+          );
+          if (!confirmDelete) return;
+          activities.splice(existingEntryIndex, 1); // Remove existing entry
+        }
+
+        let travelMode =
+          parseFloat(document.getElementById("travel-mode").value) || 0;
+        let travelDistance =
+          parseFloat(document.getElementById("travel-distance").value) || 0;
+        let mealsCount =
+          parseInt(document.getElementById("meals-count").value) || 0;
+        let foodType =
+          parseFloat(document.getElementById("food-type").value) || 0;
+        let powerUsage =
+          parseFloat(document.getElementById("power-usage").value) || 0;
+        let screenUsage =
+          parseFloat(document.getElementById("screen-usage").value) || 0;
+        let wasteAmount =
+          parseFloat(document.getElementById("waste-amount").value) || 0;
+
+        if (screenUsage > 24) {
+          alert("Screen usage cannot exceed 24 hours!");
+          return;
+        }
+
+        let travelEmission = travelMode * travelDistance;
+        let foodEmission = foodType * mealsCount;
+        let powerEmission = powerUsage * 0.92;
+        let screenEmission = screenUsage * 0.05;
+        let wasteEmission = wasteAmount * 0.06;
+        let totalEmission = (
+          travelEmission +
+          foodEmission +
+          powerEmission +
+          screenEmission +
+          wasteEmission
+        ).toFixed(2);
+
+        let activity = {
+          date,
+          travelEmission,
+          foodEmission,
+          powerEmission,
+          screenEmission,
+          wasteEmission,
+          totalEmission,
+        };
+        activities.push(activity);
+
+        localStorage.setItem("activities", JSON.stringify(activities));
+        displayActivities();
+        alert("Activity logged successfully!");
+      }
+
+      function displayActivities() {
+        let activities = JSON.parse(localStorage.getItem("activities")) || [];
+        let list = document.getElementById("activity-list");
+        list.innerHTML = activities
+          .map(
+            (activity, index) => `
+                <li class="p-3 bg-gray-100 rounded mt-2 flex justify-between">
+                    <div><strong>Date:</strong> ${activity.date} | <strong>Total CO₂:</strong> ${activity.totalEmission} kg</div>
+                    <button onclick="deleteActivity(${index})" class="text-red-600 font-bold">✖</button>
+                </li>`
+          )
+          .join("");
+      }
+
+      function deleteActivity(index) {
+        let activities = JSON.parse(localStorage.getItem("activities")) || [];
+        activities.splice(index, 1);
+        localStorage.setItem("activities", JSON.stringify(activities));
+        displayActivities();
+      }
+
+      document.addEventListener("DOMContentLoaded", displayActivities);
+    </script>
+  </body>
+</html>

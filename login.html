@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Carbon Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header class="header">
+      <h1 class="logo">Carbon Tracker</h1>
+    </header>
+
+    <!-- Login Section -->
+    <main class="main">
+      <section class="login-container">
+        <h2>Welcome to Carbon Tracker</h2>
+        <div class="box">
+          <form id="login-form">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="Email" required />
+
+            <label for="login-password">Password</label>
+            <input
+              type="password"
+              id="login-password"
+              placeholder="Password"
+              required
+            />
+
+            <button type="submit">Login</button>
+          </form>
+          <p class="text-sm">
+            Don't have an account?
+            <a href="signup.html" class="text-green">Sign up</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const email = document.getElementById("login-email").value;
+          const password = document.getElementById("login-password").value;
+          const storedUser = JSON.parse(localStorage.getItem("user"));
+
+          if (
+            storedUser &&
+            storedUser.email === email &&
+            storedUser.password === password
+          ) {
+            localStorage.setItem("loggedIn", "true");
+            alert("Login successful! Redirecting to dashboard.");
+            window.location.href = "dashboard.html";
+          } else {
+            alert("Invalid email or password.");
+          }
+        });
+    </script>
+
+    <!-- Styles -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+      body {
+        background-color: #f0f8f7;
+        background-image: url("image12.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .header {
+        text-align: center;
+        padding: 20px;
+        background-color: #4caf50;
+        color: white;
+      }
+      .logo {
+        font-size: 36px;
+        font-weight: bold;
+      }
+      .login-container {
+        background-color: #a5d7a7;
+        border: 2px solid #4caf50;
+        padding: 40px;
+        border-radius: 10px;
+        width: 350px;
+        margin: 100px auto;
+        text-align: center;
+      }
+      .box {
+        padding: 30px;
+        border-radius: 10px;
+      }
+      h2 {
+        color: #2e7d32;
+      }
+      label {
+        display: block;
+        margin-top: 20px;
+        color: #555;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      button {
+        margin-top: 20px;
+        background-color: #2e7d32;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+      }
+      button:hover {
+        background-color: #388e3c;
+      }
+      .text-sm {
+        font-size: 14px;
+        color: #555;
+      }
+      .text-green {
+        color: #2e7d32;
+        text-decoration: none;
+      }
+    </style>
+  </body>
+</html>

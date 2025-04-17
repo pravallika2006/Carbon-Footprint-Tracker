@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Carbon Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      // Redirect user if not logged in
+      if (!localStorage.getItem("loggedIn")) {
+        alert("Please log in first!");
+        window.location.href = "login.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user) {
+          document.getElementById("user-name").textContent = user.name;
+        }
+        updateDashboard();
+      });
+
+      function logout() {
+        localStorage.removeItem("loggedIn");
+        alert("Logged out successfully!");
+        window.location.href = "home.html";
+      }
+
+      function updateDashboard() {
+        let activities = JSON.parse(localStorage.getItem("activities")) || [];
+
+        let totalEmission = 0,
+          travelEmission = 0,
+          foodEmission = 0,
+          powerEmission = 0,
+          screenEmission = 0,
+          wasteEmission = 0;
+
+        activities.forEach((entry) => {
+          totalEmission += parseFloat(entry.totalEmission);
+          travelEmission += parseFloat(entry.travelEmission);
+          foodEmission += parseFloat(entry.foodEmission);
+          powerEmission += parseFloat(entry.powerEmission);
+          screenEmission += parseFloat(entry.screenEmission);
+          wasteEmission += parseFloat(entry.wasteEmission);
+        });
+
+        document.getElementById("daily-footprint").textContent =
+          totalEmission.toFixed(2) + " kg CO₂";
+        document.getElementById("weekly-footprint").textContent =
+          (totalEmission * 7).toFixed(2) + " kg CO₂";
+        document.getElementById("monthly-footprint").textContent =
+          (totalEmission * 30).toFixed(2) + " kg CO₂";
+
+        let goal = 100;
+        let progressPercent = Math.min(
+          ((totalEmission * 30) / goal) * 100,
+          100
+        );
+        document.getElementById("progress-bar").style.width =
+          progressPercent + "%";
+
+        let categories = {
+          Travel: travelEmission,
+          Power: powerEmission,
+          Food: foodEmission,
+          "Screen Usage": screenEmission,
+          Waste: wasteEmission,
+        };
+
+        updateChart(categories);
+        updateTips(categories);
+      }
+
+      let emissionChart;
+      function updateChart(categories) {
+        let ctx = document.getElementById("emissionChart").getContext("2d");
+
+        if (emissionChart) {
+          emissionChart.destroy();
+        }
+
+        emissionChart = new Chart(ctx, {
+          type: "pie",
+          data: {
+            labels: ["Travel", "Power", "Food", "Screen Usage", "Waste"],
+            datasets: [
+              {
+                data: [
+                  categories.Travel,
+                  categories.Power,
+                  categories.Food,
+                  categories["Screen Usage"],
+                  categories.Waste,
+                ],
+                backgroundColor: [
+                  "#ff6384",
+                  "#36a2eb",
+                  "#ffce56",
+                  "#4bc0c0",
+                  "#9966ff",
+                ],
+              },
+            ],
+          },
+        });
+      }
+
+      function updateTips(categories) {
+        let maxCategory = Object.keys(categories).reduce((a, b) =>
+          categories[a] > categories[b] ? a : b
+        );
+        let tips = {
+          Travel:
+            "🚴‍♂ Consider biking or walking instead of driving short distances.",
+          Power:
+            "💡 Save electricity by switching off lights and using energy-efficient appliances.",
+          Food: "🌱 Try reducing meat consumption for a lower carbon footprint.",
+          "Screen Usage":
+            "📱 Reduce screen time and use energy-efficient devices to lower your carbon footprint.",
+          Waste: "♻ Recycle and compost to minimize waste impact.",
+        };
+
+        document.getElementById("eco-tips").textContent =
+          tips[maxCategory] ||
+          "Great job! Keep reducing your carbon footprint!";
+      }
+    </script>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <!-- Navbar -->
+    <nav class="bg-green-600 text-white p-4 flex justify-between">
+      <h1 class="text-xl font-bold">Carbon Tracker</h1>
+      <ul class="flex space-x-4">
+        <li><a href="index.html" class="hover:underline">Home</a></li>
+        <li><a href="dashboard.html" class="hover:underline">Dashboard</a></li>
+        <li>
+          <a href="log-activity.html" class="hover:underline">Log Activity</a>
+        </li>
+        <li><a href="tips.html" class="hover:underline">Tips</a></li>
+        <li><a href="profile.html" class="hover:underline">Profile</a></li>
+      </ul>
+      <button
+        onclick="logout()"
+        class="bg-red-500 px-4 py-2 rounded hover:bg-red-700"
+      >
+        Logout
+      </button>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+      <h2 class="text-2xl font-bold text-center">
+        Welcome, <span id="user-name">User</span>!
+      </h2>
+      <p class="text-center text-gray-600 mt-2">
+        Track your carbon footprint and progress.
+      </p>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <div class="p-4 bg-green-100 text-green-700 rounded-lg shadow">
+          <h3 class="text-lg font-semibold">Daily Footprint</h3>
+          <p id="daily-footprint" class="text-2xl font-bold">0.0 kg CO₂</p>
+        </div>
+        <div class="p-4 bg-blue-100 text-blue-700 rounded-lg shadow">
+          <h3 class="text-lg font-semibold">Weekly Footprint</h3>
+          <p id="weekly-footprint" class="text-2xl font-bold">0.0 kg CO₂</p>
+        </div>
+        <div class="p-4 bg-red-100 text-red-700 rounded-lg shadow">
+          <h3 class="text-lg font-semibold">Monthly Footprint</h3>
+          <p id="monthly-footprint" class="text-2xl font-bold">0.0 kg CO₂</p>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mt-6">
+        <h3 class="text-lg font-semibold">Reduction Goal Progress</h3>
+        <div class="bg-gray-300 h-4 w-full rounded-lg mt-2">
+          <div
+            class="bg-green-500 h-4 rounded-lg"
+            id="progress-bar"
+            style="width: 0%"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Emission Breakdown -->
+      <div class="mt-6">
+        <h3 class="text-lg font-semibold text-center">Emission Breakdown</h3>
+        <canvas
+          id="emissionChart"
+          class="w-full max-w-md mx-auto mt-4"
+        ></canvas>
+      </div>
+
+      <!-- Personalized Tips -->
+      <div class="mt-6 p-4 bg-blue-100 rounded-lg">
+        <h3 class="text-lg font-semibold">Eco-Friendly Tips</h3>
+        <p id="eco-tips" class="mt-2 text-gray-700">Loading tips...</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 bg-green-600 text-white mt-10">
+      <p>&copy; 2025 Carbon Tracker. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
