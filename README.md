@@ -46,7 +46,7 @@ A simple and interactive web application designed to help users log daily activi
 ## 🌐 Links
 
 - **MVP**: https://ecohabits-carbon-footprint-tracker.netlify.app  
-- **Demo Video (3 Minutes)**: https://drive.google.com/file/d/1feBezxLL4ZSFgPVSt1e83lvkOlTvrBjk/view?usp=sharing
+- **Demo Video**: https://drive.google.com/file/d/1feBezxLL4ZSFgPVSt1e83lvkOlTvrBjk/view?usp=sharing
 
 ---
 
